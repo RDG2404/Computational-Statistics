@@ -1,0 +1,51 @@
+#importing relevant libraries
+library(ggplot2)
+library(tidyverse)
+library(caret)
+library(splines)
+library(npreg)
+library(Metrics)
+#importing data and assigning column names
+study_data<-read.table("copper-new.txt", sep="",header=F)
+colnames(study_data)<-c("Ct", "Temp")
+#splitting data into training and testing samples(0.75:0.25)
+set.seed(101)
+sample<-sample.int(n = nrow(study_data), size = floor(.75*nrow(study_data)), replace = F)
+train_data <-study_data[sample, ]
+test_data<-study_data[-sample, ]
+#creating linear model on training data-set (Part A)
+train_data.regression1<-lm(train_data$Ct~train_data$Temp)
+summary(train_data.regression1)
+predictions1<-predict(train_data.regression1, newdata=data.frame(test_data$Ct), se=T)
+rmse1<-rmse(test_data$Ct, predictions1$fit)
+ggplot(data=train_data,mapping=aes(x=Temp,y=Ct))+geom_point()+ggtitle("Coefficient of thermal expansion (Ct) Vs. Temperature (T)")+geom_abline(data=train_data.regression1, color="blue")+theme_bw()
+#creating non-linear model using bi-cubic spline (Part B)
+knots<-quantile(train_data$Temp, p=c(0.25,0.5,0.75))#Creating knots at lower, median and upper quantile
+train_data.regression2<-lm(train_data$Ct~bs(train_data$Temp, knots=knots), data=train_data)
+predictions2<-predict(train_data.regression2, newdata=data.frame(test_data$Ct), se=T)
+rmse2<-rmse(test_data$Ct,predictions2$fit)
+ggplot(study_data, aes(Temp,Ct) ) + geom_point() + stat_smooth(method = lm, formula = y ~ splines::bs(x, df = 3))+theme_bw()
+ggplot(test_data, aes(Temp,Ct) ) + geom_point() + stat_smooth(method = lm, formula = y ~ splines::bs(x, df = 3))+theme_bw()
+#creating non-linear model using normal spline w/df=4
+train_data.regression3<-lm(train_data$Ct~ns(train_data$Temp, df=4), data=train_data)
+predictions3<-predict(train_data.regression3, newdata=data.frame(test_data$Ct), se=T)
+rmse3<-rmse(test_data$Ct, predictions3$fit)
+ggplot(study_data, aes(Temp,Ct) ) + geom_point() + stat_smooth(method = lm, formula = y ~ splines::ns(x, df = 4))+theme_bw()
+ggplot(test_data, aes(Temp,Ct) ) + geom_point() + stat_smooth(method = lm, formula = y ~ splines::ns(x, df = 4))+theme_bw()
+#Using "ss()" method from "npreg" package for smooth spline fitting - MAIN
+ss.train_data.regression1<-ss(x=study_data$Temp, y=study_data$Ct, nknots=3)
+ss.train_data.regression1
+rmse_ss<-sqrt(mean((study_data$Ct-ss.train_data.regression1$y)^2))
+rmse1_a<-sqrt(mean((test_data$Ct-predictions1$fit)^2))
+rmse2_a<-sqrt(mean((test_data$Ct-predictions2$fit)^2))
+rmse3_a<-sqrt(mean((test_data$Ct-predictions3$fit)^2))
+summary(ss.train_data.regression1)
+plot(ss.train_data.regression1, xlab="Temperature", ylab="Coefficient of Thermal Expansion", col="blue")
+points(study_data$Temp, study_data$Ct)
+abline(a=NULL, b=1, h=NULL, v=400)
+identify()
+#plotting linear model
+plot(Ct~Temp, data=study_data)
+abline(train_data.regression1, col="blue")
+#Y_val<-which(ss.train_data.regression1$x==400)
+locator()
