@@ -15,10 +15,13 @@ The image shown below is a visual representation of the iterative algorithm appr
 ![image](https://user-images.githubusercontent.com/80390906/231824788-ce4db252-bfd0-4d6c-ad5f-52f547653d2c.png)
 
 We then compared the results of our produced image to the sample image provided by the MRI dataset.
+
 The validation approach is as follows:
+
 ![image](https://user-images.githubusercontent.com/80390906/231825479-6a5f748f-1725-4a3f-b7a5-7fdd4d1b68b8.png)
 
 The images produced and error percentages are as follows:
+
 ![image](https://user-images.githubusercontent.com/80390906/231824622-0d9e96e4-4edb-4a45-93d1-e787b43ddb9a.png)
 
 The computational speedups are shown below, we can see that the SFU kernel with constant memory access performs the best, providing upto 108x sppedup in overall reconstruction time as compared to the sequential approach.
