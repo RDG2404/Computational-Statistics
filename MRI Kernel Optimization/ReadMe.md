@@ -1,4 +1,4 @@
-The following code represents multiple approaches used to iteratively solve the Q and FhD components to identify the MRI voxel values through the equation :
+The following code represents multiple parallel computing approaches used to iteratively solve the Q and FhD components to identify the MRI voxel values through the equation :
 
                                 (FhF + λWhW)ρ=FhD
 
