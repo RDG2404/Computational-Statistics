@@ -2,7 +2,7 @@ The following code represents multiple parallel computing approaches used to ite
 
                                 (FhF + λWhW)ρ=FhD
 
-Where the (FhF + λWhW) component is the pre-computed Q vector, ρ is the unknown vector of MRI voxel values, Fh is a matrix that models the physics of the imaging process, andD is the sample data from the MRI scanner.
+Where the (FhF + λWhW) component is the pre-computed Q vector, ρ is the unknown vector of MRI voxel values, Fh is a matrix that models the physics of the imaging process, and D is the sample data from the MRI scanner.
 
 The goal of this parallel computing approach comparison is to generate a parallel computing algorithm to parse through the available data (in unit millions) and calculate the Q and FhD components in as little time as possible. 
 
